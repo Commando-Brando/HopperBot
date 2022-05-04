@@ -21,6 +21,9 @@ class Utility(commands.Cog):
     async def ping(self, ctx):
         await ctx.send('pong!')
 
+    @commands.command()
+    async def test(self, ctx):
+        await ctx.send('This is a test')
 
 def setup(bot):
     bot.add_cog(Utility(bot))
