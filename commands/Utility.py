@@ -38,11 +38,13 @@ class Utility(commands.Cog):
 
     @commands.command()
     async def trivia(self, ctx):
-        response = requests.get("https://opentdb.com/api.php?amount=10&category=18&type=multiple") # https://opentdb.com/api_config.php
+        response = requests.get("https://opentdb.com/api.php?amount=3&category=18&type=multiple") # https://opentdb.com/api_config.php
+        multiple_choice = ['a) ', 'b) ', 'c) ', 'd ']
         json_data = json.loads(response.text)
-        question = ""
-        for i in range(10):
-            question += json_data['results'][i]['question']
+        question = json_data['results'][0]['question'] + "\n\n"
+        question += multiple_choice[0] + json_data['results'][0]['correct_answer'] + "\n"
+        for i in range(len(json_data['results'][0]['incorrect_answers'])):
+            question += multiple_choice[i + 1] + json_data['results'][0]['incorrect_answers'][i] + "\n"
         await ctx.send(question)
 
 
