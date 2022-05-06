@@ -1,5 +1,6 @@
 from discord.ext import commands
-
+import requests
+import json
 
 class Utility(commands.Cog):
     algos = [
@@ -19,7 +20,7 @@ class Utility(commands.Cog):
     def get_algos(self):
         output = ""
         for line in self.algos:
-            output += line[0]
+            output += line[0] + " " + line[1]
             output += "\n"
         return output
 
@@ -34,6 +35,16 @@ class Utility(commands.Cog):
     @commands.command()
     async def algo(self, ctx):
         await ctx.send(self.get_algos())
+
+    @commands.command()
+    async def trivia(self, ctx):
+        response = requests.get("https://opentdb.com/api.php?amount=10&category=18&type=multiple") # https://opentdb.com/api_config.php
+        json_data = json.loads(response.text)
+        question = ""
+        for i in range(10):
+            question += json_data['results'][i]['question']
+        await ctx.send(question)
+
 
 
 
