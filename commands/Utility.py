@@ -2,6 +2,7 @@ from discord.ext import commands
 import requests
 import json
 
+
 class Utility(commands.Cog):
     algos = [
         ["MergeSort", "Merge.JPG"],
@@ -29,8 +30,11 @@ class Utility(commands.Cog):
         await ctx.send('pong!')
 
     @commands.command()
-    async def test(self, ctx):
-        await ctx.send('This is a test')
+    async def joke(self, ctx):
+        response = requests.get(
+            "https://geek-jokes.sameerkumar.website/api?format=json")  # https://opentdb.com/api_config.php
+        json_data = json.loads(response.text)
+        await ctx.send(json_data['joke'])
 
     @commands.command()
     async def algo(self, ctx):
@@ -38,7 +42,8 @@ class Utility(commands.Cog):
 
     @commands.command()
     async def trivia(self, ctx):
-        response = requests.get("https://opentdb.com/api.php?amount=3&category=18&type=multiple") # https://opentdb.com/api_config.php
+        response = requests.get(
+            "https://opentdb.com/api.php?amount=3&category=18&type=multiple")  # https://opentdb.com/api_config.php
         multiple_choice = ['a) ', 'b) ', 'c) ', 'd ']
         json_data = json.loads(response.text)
         question = json_data['results'][0]['question'] + "\n\n"
@@ -46,9 +51,6 @@ class Utility(commands.Cog):
         for i in range(len(json_data['results'][0]['incorrect_answers'])):
             question += multiple_choice[i + 1] + json_data['results'][0]['incorrect_answers'][i] + "\n"
         await ctx.send(question)
-
-
-
 
 
 def setup(bot):
