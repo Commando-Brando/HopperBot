@@ -52,6 +52,13 @@ class Utility(commands.Cog):
             question += multiple_choice[i + 1] + json_data['results'][0]['incorrect_answers'][i] + "\n"
         await ctx.send(question)
 
+        def check(message):
+            return message.content == 'a'
+
+        msg = await self.bot.wait_for("message", check=check)
+
+        await ctx.send("Correct!")
+
 
 def setup(bot):
     bot.add_cog(Utility(bot))
