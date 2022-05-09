@@ -1,6 +1,7 @@
 from discord.ext import commands
 import requests
 import json
+import random
 
 
 class Utility(commands.Cog):
@@ -45,15 +46,27 @@ class Utility(commands.Cog):
         response = requests.get(
             "https://opentdb.com/api.php?amount=3&category=18&type=multiple")  # https://opentdb.com/api_config.php
         multiple_choice = ['a) ', 'b) ', 'c) ', 'd ']
+        choices = []
         json_data = json.loads(response.text)
         question = json_data['results'][0]['question'] + "\n\n"
-        question += multiple_choice[0] + json_data['results'][0]['correct_answer'] + "\n"
+        answer = json_data['results'][0]['correct_answer']
+        # question += answer + "\n"
         for i in range(len(json_data['results'][0]['incorrect_answers'])):
-            question += multiple_choice[i + 1] + json_data['results'][0]['incorrect_answers'][i] + "\n"
+            choices.append(json_data['results'][0]['incorrect_answers'][i])
+            # question += choices[i] + "\n"
+        choices.append(answer)
+        random.shuffle(choices)
+        for i in range(len(choices)):
+            question += multiple_choice[i] + choices[i] + '\n'
+
+        answer_key = {'a': choices[0], 'b': choices[1], 'c': choices[2], 'd': choices[3]}
+
         await ctx.send(question)
 
         def check(message):
-            return message.content == 'a'
+            if message.content in {'a', 'b', 'c', 'd'} and answer_key[message.content] == answer:
+                return True
+            return False
 
         msg = await self.bot.wait_for("message", check=check)
 
