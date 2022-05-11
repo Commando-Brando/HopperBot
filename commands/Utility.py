@@ -59,6 +59,7 @@ class Utility(commands.Cog):
         for i in range(len(choices)):
             question += multiple_choice[i] + choices[i] + '\n'
 
+        question += "\nReply with 'a', 'b', 'c', or 'd'\n"
         answer_key = {'a': choices[0], 'b': choices[1], 'c': choices[2], 'd': choices[3]}
 
         await ctx.send(question)
@@ -68,9 +69,11 @@ class Utility(commands.Cog):
                 return True
             return False
 
-        msg = await self.bot.wait_for("message", check=check)
-
-        await ctx.send("Correct!")
+        try:
+            msg = await self.bot.wait_for("message", check=check, timeout=60.0)
+            await ctx.send("Correct!")
+        except:
+            await ctx.send("\nTimes up! The answer was " + answer)
 
 
 def setup(bot):
